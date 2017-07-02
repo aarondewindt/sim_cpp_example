@@ -14,6 +14,7 @@
 
 
 namespace sim_cpp_example {
+
     Triangle::Triangle(double height, double width) :
         height_(height),
         width_(width)

@@ -12,6 +12,7 @@
  *
  */
 namespace sim_cpp_example {
+
     /** Interface class for a shape types.
      *
      * This is an abstract class used as a generic interface to interact with
