@@ -87,8 +87,9 @@ Comments are not updated as consistently as code.
 
 ##### Example, bad
 
-    auto x = m * v1 + vv;   // multiply m with v1 and add the result to vv
-
+```c++
+auto x = m * v1 + vv;   // multiply m with v1 and add the result to vv
+```
 
 
 ### <a name="Rl-comments-intent"></a>NL.2: State intent in comments
@@ -144,19 +145,25 @@ if (i == j)
 
 ##### Note
 
-Always indenting the statement after `if (...)`, `for (...)`, and `while (...)` is usually a good idea:
+Always indenting the statement after `if (...)`, `for (...)`, and
+`while (...)` is usually a good idea:
 
+```c++
 if (i < 0) error("negative argument");
 
 if (i < 0)
     error("negative argument");
+```
 
 ##### Note
 
-Always indent code inside a namespace, class, struct, etc.
+Always indent code inside a namespace, class, struct, function, etc,
+with the exception of the visibility keywords (public, protected,
+private) in classes and structures.
+
 ```c++
 namespace sim_cpp_example {
-    class Rectangle : public ShapeInterface{
+    class Rectangle : public ShapeInterface {
     public:
         Rectangle(double length, double width);
 
@@ -169,3 +176,46 @@ namespace sim_cpp_example {
     };
 }
 ```
+
+
+### <a name="Rl-name-type"></a>NL.5: Don't encode type information in names
+
+##### Rationale
+
+If names reflect types rather than functionality, it becomes hard to
+change the types used to provide that functionality. Also, if the type
+of a variable is changed, code using it will have to be modified.
+Minimize unintentional conversions.
+
+##### Example, bad
+
+```c++
+    void print_int(int i);
+    void print_string(const char*);
+
+    print_int(1);   // OK
+    print_int(x);   // conversion to int if x is a double
+```
+
+##### Note
+
+Names with types encoded are either verbose or cryptic.
+
+    printS  // print a std::string
+    prints  // print a C-style string
+    printi  // print an int
+
+PS. Hungarian notation is evil (at least in a strongly statically-typed language).
+
+##### Note
+
+Some styles distinguishes members from local variable, and/or from global variable.
+
+    struct S {
+        int m_;
+        S(int m) :m_{abs(m)} { }
+    };
+
+This is not evil.
+
+
