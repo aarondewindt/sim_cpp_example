@@ -21,6 +21,7 @@ Aside from the directories shown below, cmake and doxygen will generate
 their directories when executing.
 
 ### Directories
+ - **bin:**   Contains the project binaries.
  - **doc:**   Contains the project documentation.
  - **inc:**   All project header files and all third party header files
               that do not exist under `/usr/local/include` are also placed
@@ -53,8 +54,8 @@ leaves the final decision to the developers. The main recommendation is
 to keep the naming conventions consistent throughout the entire project.
 This sections describes the naming conventions used by our projects.
 These conventions are based on the recommendation given by the *C++
-Core Guidelines* with some modifications to keep them similar to
-*PEP-008* which is already being used by the team.
+Core Guidelines* while keeping them similar to *PEP-008* which is
+already being used by the team.
 
 
 * [NL.1: Don't say in comments what can be clearly stated in code](#Rl-comments)
@@ -64,8 +65,6 @@ Core Guidelines* with some modifications to keep them similar to
 * [NL.5: Don't encode type information in names](#Rl-name-type)
 * [NL.7: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
 * [NL.8: Use a consistent naming style](#Rl-name)
-* [NL.9: Use `ALL_CAPS` for macro names only](#Rl-all-caps)
-* [NL.10: Avoid CamelCase](#Rl-camel)
 * [NL.11: Make literals readable](#Rl-literals)
 * [NL.15: Use spaces sparingly](#Rl-space)
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
@@ -190,32 +189,358 @@ Minimize unintentional conversions.
 ##### Example, bad
 
 ```c++
-    void print_int(int i);
-    void print_string(const char*);
+void print_int(int i);
+void print_string(const char*);
 
-    print_int(1);   // OK
-    print_int(x);   // conversion to int if x is a double
+print_int(1);   // OK
+print_int(x);   // conversion to int if x is a double
 ```
 
 ##### Note
 
 Names with types encoded are either verbose or cryptic.
 
-    printS  // print a std::string
-    prints  // print a C-style string
-    printi  // print an int
+```c++
+printS  // print a std::string
+prints  // print a C-style string
+printi  // print an int
+```
 
-PS. Hungarian notation is evil (at least in a strongly statically-typed language).
+PS. Hungarian notation is evil (at least in a strongly statically-typed
+language).
+
+
+### <a name="Rl-name-length"></a>NL.7: Make the length of a name roughly proportional to the length of its scope
+
+**Rationale**: The larger the scope the greater the chance of confusion
+and of an unintended name clash.
+
+##### Example
+
+```c++
+double sqrt(double x);   // return the square root of x; x must be non-negative
+
+int length(const char* p);  // return the number of characters in a zero-terminated C-style string
+
+int length_of_string(const char zero_terminated_array_of_char[])    // bad: verbose
+
+int g;      // bad: global variable with a cryptic name
+
+int open;   // bad: global variable with a short, popular name
+
+The use of `p` for pointer and `x` for a floating-point variable is conventional and non-confusing in a restricted scope.
+```
+
+
+### <a name="Rl-name"></a>NL.8: Use a consistent naming style
+
+**Rationale**: Consistence in naming and naming style increases
+readability.
+
+##### Types
+
+Type declarations such as classes, structures, typedefs, etc, should
+use `CamelCase`.
+
+```c++
+typename<typename T>
+class HashTbl {   // maps string to T
+    // ...
+};
+```
+
+##### non_types
+
+Non-types such as variables, functions, enumerator members, namespaces
+etc, should be `lower_case_with_underscore`.
+
+##### MARCOS
+
+Use `ALL_CAPS` for macros and **only** macros. This is
+to avoid confusing macros with names that obey scope and type rules.
+
+###### Example
+
+```c++
+void f()
+{
+    const int SIZE{1000};  // Bad, use 'size' instead
+    int v[SIZE];
+}
+```
+
+###### Note
+This rule applies to non-macro symbolic constants:
+
+```c++
+enum bad { BAD, WORSE, HORRIBLE }; // BAD
+```
+
+
+### <a name="Rl-space"></a>NL.15: Use spaces sparingly
+
+##### Reason
+
+Too much space makes the text larger and distracts.
+
+##### Example, bad
+
+```c++
+#include < map >
+
+int main(int argc, char * argv [ ])
+{
+    // ...
+}
+```
+
+##### Example
+
+```c++
+#include <map>
+
+int main(int argc, char* argv[])
+{
+    // ...
+}
+```
+
+
+### <a name="Rl-literals"></a>NL.11: Make literals readable
+
+##### Reason
+
+Readability.
+
+##### Example
+
+Use digit separators to avoid long strings of digits
+
+    auto c = 299'792'458; // m/s2
+    auto q2 = 0b0000'1111'0000'0000;
+    auto ss_number = 123'456'7890;
+
+##### Example
+
+Use literal suffixes where clarification is needed
+
+    auto hello = "Hello!"s; // a std::string
+    auto world = "world";   // a C-style string
+    auto interval = 100ms;  // using <chrono>
 
 ##### Note
 
-Some styles distinguishes members from local variable, and/or from global variable.
+Literals should not be sprinkled all over the code as ["magic constants"](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Res-magic),
+but it is still a good idea to make them readable where they are defined.
+It is easy to make a typo in a long string of integers.
 
-    struct S {
-        int m_;
-        S(int m) :m_{abs(m)} { }
+
+### <a name="Rl-order"></a>NL.16: Use a conventional class member declaration order
+
+##### Reason
+
+A conventional order of members improves readability.
+
+When declaring a class use the following order
+
+* types: classes, enums, and aliases (`using`)
+* constructors, assignments, destructor
+* functions
+* data
+
+Use the `public` before `protected` before `private` order.
+
+Private types and functions can be placed with private data.
+
+Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed among blocks of declarations with different access (e.g. `private`).
+
+##### Example
+```c++
+class X {
+public:
+    // interface
+protected:
+    // unchecked function for use by derived class implementations
+private:
+    // implementation details
+};
+```
+
+##### Note
+
+The use of macros to declare groups of members often violates any ordering rules.
+However, macros obscures what is being expressed anyway.
+
+
+### <a name="Rl-knr"></a>NL.17: Use K&R-derived layout
+
+##### Reason
+
+This is the original C and C++ layout. It preserves vertical space well. It distinguishes different language constructs (such as functions and classes) well.
+
+##### Note
+
+In the context of C++, this style is often called "Stroustrup".
+
+##### Example
+
+    struct Cable {
+        int x;
+        // ...
     };
 
-This is not evil.
+    double foo(int x)
+    {
+        if (0 < x) {
+            // ...
+        }
+
+        switch (x) {
+            case 0:
+                // ...
+                break;
+            case amazing:
+                // ...
+                break;
+            default:
+                // ...
+                break;
+        }
+
+        if (0 < x)
+            ++x;
+
+        if (x < 0)
+            something();
+        else
+            something_else();
+
+        return some_value;
+    }
+
+Note the space between `if` and `(`
+
+##### Note
+
+Use separate lines for each statement, the branches of an `if`, and the body of a `for`.
+
+##### Note
+
+The `{` for a `class` and a `struct` is *not* on a separate line, but the `{` for a function is.
+
+##### Note
+
+Capitalize the names of your user-defined types to distinguish them from standards-library types.
+
+##### Note
+
+Do not capitalize function names.
+
+
+### <a name="Rl-ptr"></a>NL.18: Use C++-style declarator layout
+
+##### Reason
+
+The C-style layout emphasizes use in expressions and grammar, whereas the C++-style emphasizes types.
+The use in expressions argument doesn't hold for references.
+
+##### Example
+
+```c++
+T& operator[](size_t);   // OK
+T &operator[](size_t);   // just strange
+T & operator[](size_t);   // undecided
+```
+
+### <a name="Rl-misread"></a>NL.19: Avoid names that are easily misread
+
+##### Reason
+
+Readability.
+Not everyone has screens and printers that make it easy to distinguish all characters.
+We easily confuse similarly spelled and slightly misspelled words.
+
+##### Example
+
+```c++
+int oO01lL = 6; // bad
+
+int splunk = 7;
+int splonk = 8; // bad: splunk and splonk are easily confused
+```
+
+### <a name="Rl-stmt"></a>NL.20: Don't place two statements on the same line
+
+##### Reason
+
+Readability.
+It is really easy to overlook a statement when there is more on a line.
+
+##### Example
+
+```c++
+int x = 7; char* p = 29;    // don't
+int x = 7; f(x);  ++x;      // don't
+```
+
+
+### <a name="Rl-dcl"></a>NL.21: Declare one name (only) per declaration
+
+##### Reason
+
+Readability.
+Minimizing confusion with the declarator syntax.
+
+
+### <a name="Rl-void"></a>NL.25: Don't use `void` as an argument type
+
+##### Reason
+
+It's verbose and only needed where C compatibility matters.
+
+##### Example
+
+```c++
+void f(void);   // bad
+
+void g();       // better
+```
+
+##### Note
+
+Even Dennis Ritchie deemed `void f(void)` an abomination.
+You can make an argument for that abomination in C when function prototypes were rare so that banning:
+
+```c++
+int f();
+f(1, 2, "weird but valid C89");   // hope that f() is defined int f(a, b, c) char* c; { /* ... */ }
+```
+
+would have caused major problems, but not in the 21st century and in C++.
+
+
+### <a name="Rl-const"></a>NL.26: Use conventional `const` notation
+
+##### Reason
+
+Conventional notation is more familiar to more programmers.
+Consistency in large code bases.
+
+##### Example
+
+```c++
+const int x = 7;    // OK
+int const y = 9;    // bad
+
+const int *const p = nullptr;   // OK, constant pointer to constant int
+int const *const p = nullptr;   // bad, constant pointer to constant int
+```
+
+##### Note
+
+We are well aware that you could claim the "bad" examples more logical than the ones marked "OK",
+but they also confuse more people, especially novices relying on teaching material using the far more common, conventional OK style.
+
+As ever, remember that the aim of these naming and layout rules is consistency and that aesthetics vary immensely.
 
 
