@@ -54,8 +54,8 @@ leaves the final decision to the developers. The main recommendation is
 to keep the naming conventions consistent throughout the entire project.
 This sections describes the naming conventions used by our projects.
 These conventions are based on the recommendation given by the *C++
-Core Guidelines* while keeping them similar to *PEP-008* which is
-already being used by the team.
+Core Guidelines* while keeping them similar to *PEP-8* (which is already
+ being used for python by the team) whenever possible.
 
 
 * [NL.1: Don't say in comments what can be clearly stated in code](#Rl-comments)
@@ -316,17 +316,21 @@ Readability.
 
 Use digit separators to avoid long strings of digits
 
-    auto c = 299'792'458; // m/s2
-    auto q2 = 0b0000'1111'0000'0000;
-    auto ss_number = 123'456'7890;
+```c++
+auto c = 299'792'458; // m/s2
+auto q2 = 0b0000'1111'0000'0000;
+auto ss_number = 123'456'7890;
+```
 
 ##### Example
 
 Use literal suffixes where clarification is needed
 
-    auto hello = "Hello!"s; // a std::string
-    auto world = "world";   // a C-style string
-    auto interval = 100ms;  // using <chrono>
+```c++
+auto hello = "Hello!"s; // a std::string
+auto world = "world";   // a C-style string
+auto interval = 100ms;  // using <chrono>
+```
 
 ##### Note
 
@@ -384,39 +388,41 @@ In the context of C++, this style is often called "Stroustrup".
 
 ##### Example
 
-    struct Cable {
-        int x;
+```c++
+struct Cable {
+    int x;
+    // ...
+};
+
+double foo(int x)
+{
+    if (0 < x) {
         // ...
-    };
-
-    double foo(int x)
-    {
-        if (0 < x) {
-            // ...
-        }
-
-        switch (x) {
-            case 0:
-                // ...
-                break;
-            case amazing:
-                // ...
-                break;
-            default:
-                // ...
-                break;
-        }
-
-        if (0 < x)
-            ++x;
-
-        if (x < 0)
-            something();
-        else
-            something_else();
-
-        return some_value;
     }
+
+    switch (x) {
+        case 0:
+            // ...
+            break;
+        case amazing:
+            // ...
+            break;
+        default:
+            // ...
+            break;
+    }
+
+    if (0 < x)
+        ++x;
+
+    if (x < 0)
+        something();
+    else
+        something_else();
+
+    return some_value;
+}
+```
 
 Note the space between `if` and `(`
 
