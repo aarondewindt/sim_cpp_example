@@ -27,6 +27,15 @@ add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
 include_directories(${googletest_SOURCE_DIR}/googletest/include)
 include_directories(${googletest_SOURCE_DIR}/googlemock/include)
 
+find_package(Boost 1.55.0 REQUIRED COMPONENTS system filesystem locale)
+if (Boost_FOUND)
+    include_directories(SYSTEM ${Boost_INCLUDE_DIR})
+else()
+    error("Boost not found")
+endif()
+
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+
 # Include directories
 include_directories(inc)
 
