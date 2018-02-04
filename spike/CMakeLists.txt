@@ -1,0 +1,1 @@
+add_executable(spike_fibonacci fibonacci.cpp)

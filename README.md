@@ -11,6 +11,12 @@ added in the future.
  - Documentation: Doxygen (http://www.stack.nl/~dimitri/doxygen/index.html)
  - Unit testing: Google test (https://github.com/google/googletest)
 
+The C++ code must be cross-platform and able to run on at least Linux
+and Windows (and optionally macOS). So the code should use the C++
+standard libraries as much possible. This includes C++11 and C++14.
+Whenever it's not possible try using cross-platform libraries such as
+boos, eigen, gnuplot-iostream, etc.
+
 
 FS: Folder structure
 --------------------
