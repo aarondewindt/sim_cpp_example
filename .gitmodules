@@ -1,0 +1,9 @@
+[submodule "libs/eigen-git-mirror"]
+	path = libs/eigen-git-mirror
+	url = https://github.com/eigenteam/eigen-git-mirror.git
+[submodule "libs/matplotlib-cpp"]
+	path = libs/matplotlib-cpp
+	url = https://github.com/lava/matplotlib-cpp.git
+[submodule "libs/googletest"]
+	path = libs/googletest
+	url = https://github.com/google/googletest.git
